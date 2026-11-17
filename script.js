@@ -40,8 +40,70 @@ const $creatures = [
 
 // YOUR WORK: build these features using the supplied HTML, CSS, and data.
 // 1. Select the collection and preference controls.
+// Selecting the collection, preference controls and status message
+const collection = document.getElementById("collection");
+const themeSelect = document.getElementById("theme");
+const layoutSelect = document.getElementById("layout");
+const statusMessage = document.getElementById("status");
 // 2. Use a loop to generate the creature entries. See START-HERE.md for markup.
-// 3. Listen for changes to each preference control and update the appearance.
+// Looping through the creatures and generate their HTML
+for (const creature of $creatures) {
+  collection.innerHTML += `
+    <li class="creature">
+      <img src="${creature.image}" alt="${creature.alt}">
+      <div class="creature-info">
+        <h3>${creature.name}</h3>
+        <p class="creature-description">${creature.description}</p>
+      </div>
+    </li>
+  `;
+}
+// 3. Listen for changes to each preference control and update the appearance of each creature.
+// the theme changes and update the habitat
+themeSelect.addEventListener("change", function () {
+  document.body.dataset.theme = themeSelect.value;
+   // Saving preferences to Local Storage
+  savePreferences();
+});
 // 4. Save both selected preferences to Local Storage.
+// the layout changes and update the collection
+layoutSelect.addEventListener("change", function () {
+  collection.dataset.layout = layoutSelect.value;
+  // Saving preferences to Local Storage
+  savePreferences();
+});
 // 5. Check for saved data on load and restore the controls and appearance.
+// Saving both selected preferences to Local Storage
+function savePreferences() {
+  const preferences = {
+    theme: themeSelect.value,
+    layout: layoutSelect.value
+  };
+
+  localStorage.setItem("mtm6302-a4-preferences", JSON.stringify(preferences));
+
+  statusMessage.textContent = "Your preferences have been saved!";
+}
+// Checking for saved preferences and restor them on page when loading
+function restorePreferences() {
+  const savedPreferences = localStorage.getItem("mtm6302-a4-preferences");
+
+  if (savedPreferences !== null) {
+    const preferences = JSON.parse(savedPreferences);
+
+    themeSelect.value = preferences.theme;
+    layoutSelect.value = preferences.layout;
+
+    document.body.dataset.theme = preferences.theme;
+    collection.dataset.layout = preferences.layout;
+
+    statusMessage.textContent = "Your preferences have been restored!";
+  } else {
+    statusMessage.textContent = "No saved preferences yet. Make this collection yours!";
+  }
+}
+
+// Restoring preferences when the page loads
+restorePreferences();
 // Add short pseudocode comments before writing each feature.
+
